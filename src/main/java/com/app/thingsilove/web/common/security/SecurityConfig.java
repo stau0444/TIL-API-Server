@@ -69,6 +69,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
         http
                 .authorizeRequests()
+                    .antMatchers(HttpMethod.GET,"/").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user/logout").permitAll()
