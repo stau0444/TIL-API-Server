@@ -51,6 +51,7 @@ public class UserService{
                 .email(signUpReq.getEmail())
                 .password(encoder.encode(signUpReq.getPassword()))
                 .userDateTime(new CreatedUpdateDateTime())
+                .enabled(true)
                 .build();
 
         User savedUser = userRepository.save(newUser);

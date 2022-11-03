@@ -25,6 +25,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -61,33 +62,38 @@ public class SecurityConfig {
     }
 
     @Bean
+    public LogoutSuccessHandler logoutSuccessHandler(){
+        return new CustomLogoutSuccessHandler();
+    }
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
-        AuthenticationConfiguration authConfig = new AuthenticationConfiguration();
-        CustomLoginFilter customLoginFilter = new CustomLoginFilter(authenticationManager(authConfig),objectMapper,passwordEncoder(),userRepository);
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
-                .anyRequest().authenticated()
+        http
+                .authorizeRequests()
+                    .antMatchers(HttpMethod.POST,"/api/user").permitAll()
+                    .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
+                    .antMatchers(HttpMethod.POST,"/api/user/logout").permitAll()
+                    .anyRequest().authenticated()
                 .and()
-                .anonymous().disable()
                 .authenticationProvider(authenticationProvider())
                 .cors().configurationSource(corsConfig)
                 .and()
                 .csrf().disable()
                 .formLogin()
-                .loginPage("/")
-                .defaultSuccessUrl("/api/user/login")
-                .passwordParameter("pwd")
-                .usernameParameter("email")
-                .loginProcessingUrl("/api/user/login")
-                .successForwardUrl("/api/user/login")
+                    .loginPage("/")
+                    .defaultSuccessUrl("/api/user/login")
+                    .passwordParameter("pwd")
+                    .usernameParameter("email")
+                    .loginProcessingUrl("/api/user/login")
+                    .successForwardUrl("/api/user/login")
                 .and()
                 .logout()
-                .logoutUrl("/api/user/logout")
-                .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl("/logoutSuccess")
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
                 .and()
                 .sessionManagement()
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(true);
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(true);
         return http.build();
     }
 }

@@ -1,19 +1,16 @@
-
-server:
-  port: 8081
 spring:
   h2:
     console:
       enabled: true
   datasource:
     hikari:
-      jdbc-url: jdbc:h2:mem:testdb
-      driver-class-name: org.h2.Driver
-      username: sa
-      password:
+      jdbc-url: jdbc:mariadb://thingsillove-db-server.cqg41lvwng6q.ap-northeast-2.rds.amazonaws.com/thingsilove
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: ugo
+      password: AsdAsd12!
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:

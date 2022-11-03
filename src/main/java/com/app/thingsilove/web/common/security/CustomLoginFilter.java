@@ -66,7 +66,6 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(loginReq.getEmail(),
                 loginReq.getPwd());
         // Allow subclasses to set the "details" property

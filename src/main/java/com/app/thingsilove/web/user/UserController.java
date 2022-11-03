@@ -13,6 +13,8 @@ import org.hibernate.criterion.Order;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +42,7 @@ public class UserController{
         LoginResp loginResp = userService.login(LoginReq.builder().email(email).pwd(pwd).build());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(loginResp);
     }
+
 
     @PostMapping("/thing")
     public ResponseEntity<PostThingResp> addThing(@RequestBody PostThingReq thingReq){
