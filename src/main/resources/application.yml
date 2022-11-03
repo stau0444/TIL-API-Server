@@ -19,3 +19,7 @@ spring:
         default_batch_fetch_size: 100
 server:
   port: 8081
+  servlet:
+    session:
+      cookie:
+        same-site: none
