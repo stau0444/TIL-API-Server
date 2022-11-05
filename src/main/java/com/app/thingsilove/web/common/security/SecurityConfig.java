@@ -33,6 +33,7 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -104,6 +105,7 @@ public class SecurityConfig {
                     .loginProcessingUrl("/api/user/login")
                     .successForwardUrl("/api/user/login")
                 .and()
+                .addFilterAt(new CustomOncePerFilter(), OncePerRequestFilter.class)
                 .logout()
                     .logoutSuccessUrl("/logoutSuccess")
                     .deleteCookies("JSESSIONID")
