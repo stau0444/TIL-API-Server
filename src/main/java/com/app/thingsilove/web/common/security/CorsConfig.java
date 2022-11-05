@@ -16,7 +16,7 @@ public class CorsConfig implements CorsConfigurationSource {
         corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000","https://things-i-love.netlify.app"));
         corsConfiguration.setExposedHeaders(List.of("*"));
         corsConfiguration.setAllowedMethods(List.of("*"));
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
         return corsConfiguration;
     }

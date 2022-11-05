@@ -66,17 +66,17 @@ public class SecurityConfig {
         return authConfiguration.getAuthenticationManager();
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://things-i-love.netlify.app","https://blog.ugosdevblog.com","http://localhost:8081"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT","OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://things-i-love.netlify.app","https://blog.ugosdevblog.com","http://localhost:8081"));
+//        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT","OPTIONS"));
+//        configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
+//        configuration.setAllowCredentials(true);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler(){
         return new CustomLogoutSuccessHandler();
@@ -85,6 +85,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
         http
                 .authorizeRequests()
+                    .antMatchers(HttpMethod.OPTIONS).permitAll()
                     .antMatchers(HttpMethod.GET,"/").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
@@ -92,7 +93,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider())
-                .cors().configurationSource(corsConfigurationSource())
+                .cors().configurationSource(new CorsConfig())
                 .and()
                 .csrf().disable()
                 .formLogin()
