@@ -26,6 +26,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.session.ConcurrentSessionFilter;
+import org.springframework.security.web.session.InvalidSessionAccessDeniedHandler;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -93,8 +96,12 @@ public class SecurityConfig {
                     .permitAll()
                 .and()
                 .sessionManagement()
-                    .maximumSessions(1)
-                    .maxSessionsPreventsLogin(true);
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .invalidSessionUrl("/api/user/session-expired")
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl("/api/user/session-expired");
+//        InvalidSessionAccessDeniedHandler
         return http.build();
     }
 }
