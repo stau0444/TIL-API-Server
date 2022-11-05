@@ -46,7 +46,9 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
+    private final CorsConfig corsConfig;
     private final UserDetailService userDetailsService;
+    private final  CustomOncePerFilter customOncePerFilter;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -94,7 +96,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider())
-                .cors().configurationSource(new CorsConfig())
+                .cors().configurationSource(corsConfig)
                 .and()
                 .csrf().disable()
                 .formLogin()
@@ -105,7 +107,7 @@ public class SecurityConfig {
                     .loginProcessingUrl("/api/user/login")
                     .successForwardUrl("/api/user/login")
                 .and()
-                .addFilterAt(new CustomOncePerFilter(), OncePerRequestFilter.class)
+                .addFilterAt(customOncePerFilter, OncePerRequestFilter.class)
                 .logout()
                     .logoutSuccessUrl("/logoutSuccess")
                     .deleteCookies("JSESSIONID")
