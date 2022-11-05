@@ -107,7 +107,6 @@ public class SecurityConfig {
                     .loginProcessingUrl("/api/user/login")
                     .successForwardUrl("/api/user/login")
                 .and()
-                .addFilterAt(customOncePerFilter, OncePerRequestFilter.class)
                 .logout()
                     .logoutSuccessUrl("/logoutSuccess")
                     .deleteCookies("JSESSIONID")
