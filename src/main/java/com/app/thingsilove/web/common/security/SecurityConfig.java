@@ -29,20 +29,21 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.InvalidSessionAccessDeniedHandler;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-    private final CorsConfig corsConfig;
-    private final ObjectMapper objectMapper;
-    private final UserRepository userRepository;
     private final UserDetailService userDetailsService;
 
     @Bean
@@ -65,6 +66,17 @@ public class SecurityConfig {
     }
 
     @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://things-i-love.netlify.app","https://blog.ugosdevblog.com","http://localhost:8081"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT","OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+    @Bean
     public LogoutSuccessHandler logoutSuccessHandler(){
         return new CustomLogoutSuccessHandler();
     }
@@ -79,7 +91,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider())
-                .cors().configurationSource(corsConfig)
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
                 .formLogin()
