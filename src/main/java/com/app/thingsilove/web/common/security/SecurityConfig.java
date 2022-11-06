@@ -71,7 +71,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://things-i-love.netlify.app"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/","https://thingsilove.netlify.app"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -87,8 +87,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
         http
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.OPTIONS).permitAll()
                     .antMatchers(HttpMethod.GET,"/").permitAll()
+                    .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user/logout").permitAll()
