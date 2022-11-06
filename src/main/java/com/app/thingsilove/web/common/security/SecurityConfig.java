@@ -46,9 +46,8 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
-    private final CorsConfig corsConfig;
+//    private final CorsConfig corsConfig;
     private final UserDetailService userDetailsService;
-    private final  CustomOncePerFilter customOncePerFilter;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -69,17 +68,17 @@ public class SecurityConfig {
         return authConfiguration.getAuthenticationManager();
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://things-i-love.netlify.app","https://blog.ugosdevblog.com","http://localhost:8081"));
-//        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT","OPTIONS"));
-//        configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
-//        configuration.setAllowCredentials(true);
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://things-i-love.netlify.app"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler(){
         return new CustomLogoutSuccessHandler();
@@ -96,7 +95,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider())
-                .cors().configurationSource(corsConfig)
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
                 .formLogin()
