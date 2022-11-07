@@ -118,7 +118,6 @@ public class SecurityConfig {
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true)
                 .expiredUrl("/api/user/session-expired");
-//        InvalidSessionAccessDeniedHandler
         return http.build();
     }
 }
