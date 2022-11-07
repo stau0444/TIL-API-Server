@@ -1,8 +1,5 @@
 
 spring:
-  h2:
-    console:
-      enabled: true
   datasource:
     hikari:
       jdbc-url: jdbc:mariadb://thingsillove-db-server.cqg41lvwng6q.ap-northeast-2.rds.amazonaws.com/thingsilove
@@ -17,7 +14,6 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
-        dialect: org.hibernate.dialect.MySQLDialect
 server:
   port: 8081
   servlet:
