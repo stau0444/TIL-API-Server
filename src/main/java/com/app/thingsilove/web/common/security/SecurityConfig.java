@@ -114,6 +114,7 @@ public class SecurityConfig {
                     .permitAll()
                 .and()
                 .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .invalidSessionUrl("/api/user/session-expired")
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true)
