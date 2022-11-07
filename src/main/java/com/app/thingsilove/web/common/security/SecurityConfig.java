@@ -89,6 +89,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET,"/").permitAll()
+                    .antMatchers(HttpMethod.GET,"/health").permitAll()
                     .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
