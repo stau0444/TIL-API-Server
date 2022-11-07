@@ -19,6 +19,5 @@ server:
     session:
       cookie:
         same-site: lax
-        secure: true
+        secure: false
         max-age: 30m
-        domain: https://thingsilove.netlify.app
