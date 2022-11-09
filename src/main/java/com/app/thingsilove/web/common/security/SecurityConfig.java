@@ -5,8 +5,6 @@ import com.app.thingsilove.core.user.UserRepository;
 import com.app.thingsilove.core.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +20,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -31,8 +28,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.session.SessionAuthenticationException;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.InvalidSessionAccessDeniedHandler;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -53,8 +48,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
-
-    private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+//    private final CorsConfig corsConfig;
     private final UserDetailService userDetailsService;
 
     @Bean
@@ -120,27 +114,8 @@ public class SecurityConfig {
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
-                .sessionManagement(
-                        s->{
-                            s.sessionAuthenticationStrategy(
-                                    new SessionAuthenticationStrategy() {
-                                        @Override
-                                        public void onAuthentication(Authentication authentication, HttpServletRequest request, HttpServletResponse response) throws SessionAuthenticationException {
-                                            logger.info("session auth start");
-                                        }
-                                    }
-                            );
-                            s.sessionAuthenticationErrorUrl("/api/user/sessionAuthFail");
-                            s.sessionAuthenticationFailureHandler(new AuthenticationFailureHandler() {
-                                @Override
-                                public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                    logger.info("session auth fail");
-                                }
-                            });
-                            s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-                        }
-                );
-
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         return http.build();
     }
 }
