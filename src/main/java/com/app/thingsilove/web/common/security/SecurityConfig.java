@@ -139,7 +139,7 @@ public class SecurityConfig {
                             });
                             s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
                         }
-                )
+                );
 
         return http.build();
     }
