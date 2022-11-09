@@ -101,6 +101,7 @@ public class SecurityConfig {
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
+
                 .formLogin()
                     .loginPage("/")
                     .defaultSuccessUrl("/api/user/login")
@@ -115,7 +116,6 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .invalidSessionStrategy(new SessionStrategy())
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true);
         return http.build();

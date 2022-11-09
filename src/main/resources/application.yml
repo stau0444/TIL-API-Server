@@ -21,4 +21,7 @@ server:
         same-site: lax
         secure: true
         max-age: 30m
+  tomcat:
+    remoteip:
+      protocol-header-https-value: x-forwarded-proto
 
