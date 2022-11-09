@@ -113,7 +113,8 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                .invalidSessionUrl("/api/user/session-expired")
+                .sessionAuthenticationErrorUrl("/session-fail")
+                .invalidSessionUrl("/session-expired")
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true)
                 .expiredUrl("/api/user/session-expired");
