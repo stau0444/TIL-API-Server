@@ -29,7 +29,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.InvalidSessionAccessDeniedHandler;
-import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -101,23 +100,25 @@ public class SecurityConfig {
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
-
                 .formLogin()
                     .loginPage("/")
                     .defaultSuccessUrl("/api/user/login")
                     .passwordParameter("pwd")
                     .usernameParameter("email")
+                    .loginProcessingUrl("/api/user/login")
                     .successForwardUrl("/api/user/login")
                 .and()
                 .logout()
-                .logoutSuccessHandler(logoutSuccessHandler())
+                    .logoutSuccessUrl("/logoutSuccess")
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .invalidSessionUrl("/api/user/session-expired")
                 .maximumSessions(1)
-                .maxSessionsPreventsLogin(true);
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl("/api/user/session-expired");
         return http.build();
     }
 }
