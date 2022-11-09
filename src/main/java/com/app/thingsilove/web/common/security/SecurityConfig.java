@@ -108,6 +108,7 @@ public class SecurityConfig {
                     .successForwardUrl("/api/user/login")
                 .and()
                 .logout()
+                .logoutSuccessUrl("redirect:/logoutSuccess")
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
