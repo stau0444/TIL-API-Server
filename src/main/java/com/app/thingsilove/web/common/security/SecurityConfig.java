@@ -120,23 +120,27 @@ public class SecurityConfig {
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
-                .sessionManagement()
-                .sessionAuthenticationStrategy(
-                        new SessionAuthenticationStrategy() {
-                            @Override
-                            public void onAuthentication(Authentication authentication, HttpServletRequest request, HttpServletResponse response) throws SessionAuthenticationException {
-                                logger.info("session auth start");
-                            }
+                .sessionManagement(
+                        s->{
+                            s.sessionAuthenticationStrategy(
+                                    new SessionAuthenticationStrategy() {
+                                        @Override
+                                        public void onAuthentication(Authentication authentication, HttpServletRequest request, HttpServletResponse response) throws SessionAuthenticationException {
+                                            logger.info("session auth start");
+                                        }
+                                    }
+                            );
+                            s.sessionAuthenticationErrorUrl("/api/user/sessionAuthFail");
+                            s.sessionAuthenticationFailureHandler(new AuthenticationFailureHandler() {
+                                @Override
+                                public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                                    logger.info("session auth fail");
+                                }
+                            });
+                            s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
                         }
                 )
-                .sessionAuthenticationErrorUrl("/api/user/sessionAuthFail")
-                .sessionAuthenticationFailureHandler(new AuthenticationFailureHandler() {
-                    @Override
-                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                        logger.info("session auth fail");
-                    }
-                })
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+
         return http.build();
     }
 }
