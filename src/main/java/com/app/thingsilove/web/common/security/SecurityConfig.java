@@ -31,6 +31,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.InvalidSessionAccessDeniedHandler;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -119,6 +121,15 @@ public class SecurityConfig {
                     .permitAll()
                 .and()
                 .sessionManagement()
+                .sessionAuthenticationStrategy(
+                        new SessionAuthenticationStrategy() {
+                            @Override
+                            public void onAuthentication(Authentication authentication, HttpServletRequest request, HttpServletResponse response) throws SessionAuthenticationException {
+                                logger.info("session auth start");
+                            }
+                        }
+                )
+                .sessionAuthenticationErrorUrl("/api/user/sessionAuthFail")
                 .sessionAuthenticationFailureHandler(new AuthenticationFailureHandler() {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
