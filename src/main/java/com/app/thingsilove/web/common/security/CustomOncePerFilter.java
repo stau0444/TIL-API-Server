@@ -1,6 +1,9 @@
 package com.app.thingsilove.web.common.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
@@ -13,54 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@Component
+
 public class CustomOncePerFilter extends OncePerRequestFilter {
+
+    Logger logger = LoggerFactory.getLogger(CustomLogoutSuccessHandler.class);
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
-            throw new ServletException("OncePerRequestFilter just supports HTTP requests");
-        }
-        
-
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        String alreadyFilteredAttributeName = getAlreadyFilteredAttributeName();
-        boolean hasAlreadyFilteredAttribute = request.getAttribute(alreadyFilteredAttributeName) != null;
-
-        if (skipDispatch(httpRequest) || shouldNotFilter(httpRequest)) {
-            // Proceed without invoking this filter...
-            filterChain.doFilter(request, response);
-        }
-        else if (hasAlreadyFilteredAttribute) {
-            if (DispatcherType.ERROR.equals(request.getDispatcherType())) {
-                doFilterNestedErrorDispatch(httpRequest, httpResponse, filterChain);
-                return;
-            }
-
-            // Proceed without invoking this filter...
-            filterChain.doFilter(request, response);
-        }
-        else {
-            // Do invoke this filter...
-            request.setAttribute(alreadyFilteredAttributeName, Boolean.TRUE);
-            try {
-                doFilterInternal(httpRequest, httpResponse, filterChain);
-            }
-            finally {
-                // Remove the "already filtered" request attribute for this request.
-                request.removeAttribute(alreadyFilteredAttributeName);
-            }
-        }
-    }
-    private boolean skipDispatch(HttpServletRequest request) {
-        if (isAsyncDispatch(request) && shouldNotFilterAsyncDispatch()) {
-            return true;
-        }
-        if (request.getAttribute(WebUtils.ERROR_REQUEST_URI_ATTRIBUTE) != null && shouldNotFilterErrorDispatch()) {
-            return true;
-        }
-        return false;
+        logger.info("OncPerFilter passed");
     }
 }

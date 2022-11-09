@@ -72,4 +72,8 @@ public class UserController{
     public ResponseEntity<GetSearchResp> search(String category , String sort){
         return ResponseEntity.ok().body(new GetSearchResp(userService.search(category,sort)));
     }
+    @GetMapping("/api/user/sessionAuthFail")
+    public ResponseEntity sessionAuthFail(){
+        return ResponseEntity.ok().body("session-auth-failed");
+    }
 }

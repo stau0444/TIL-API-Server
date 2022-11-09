@@ -24,12 +24,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.session.ConcurrentSessionFilter;
-import org.springframework.security.web.session.InvalidSessionAccessDeniedHandler;
-import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+import org.springframework.security.web.session.*;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -108,6 +107,7 @@ public class SecurityConfig {
                     .successForwardUrl("/api/user/login")
                 .and()
                 .logout()
+                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
@@ -118,6 +118,7 @@ public class SecurityConfig {
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(true)
                 .expiredUrl("/api/user/session-expired");
+
         return http.build();
     }
 }
