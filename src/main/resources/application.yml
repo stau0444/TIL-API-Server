@@ -21,5 +21,4 @@ server:
         same-site: lax
         secure: true
         max-age: 30m
-        domain: 127.0.0.1
 
