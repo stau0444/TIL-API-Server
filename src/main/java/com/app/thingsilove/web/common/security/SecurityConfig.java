@@ -108,7 +108,7 @@ public class SecurityConfig {
                     .successForwardUrl("/api/user/login")
                 .and()
                 .logout()
-                .logoutSuccessUrl("https://www.til-api.space/logoutSuccess")
+                .logoutSuccessHandler(logoutSuccessHandler())
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()

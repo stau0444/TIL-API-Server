@@ -1,5 +1,7 @@
 package com.app.thingsilove.web.common.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -12,10 +14,12 @@ import java.io.IOException;
 
 public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler implements LogoutSuccessHandler {
 
+    Logger logger = LoggerFactory.getLogger(CustomLogoutSuccessHandler.class);
+
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String refererUrl = request.getHeader("Referer");
-        System.out.println("refererUrl = " + refererUrl);
+        response.sendRedirect("/logoutSuccess");
+        logger.info("logout success");
         super.onLogoutSuccess(request, response, authentication);
     }
 }
