@@ -5,6 +5,8 @@ import com.app.thingsilove.core.user.UserRepository;
 import com.app.thingsilove.core.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,16 +22,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.InvalidSessionAccessDeniedHandler;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -46,7 +51,8 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
-//    private final CorsConfig corsConfig;
+
+    private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
     private final UserDetailService userDetailsService;
 
     @Bean
@@ -113,11 +119,13 @@ public class SecurityConfig {
                     .permitAll()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                .invalidSessionUrl("/api/user/session-expired")
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(true)
-                .expiredUrl("/api/user/session-expired");
+                .sessionAuthenticationFailureHandler(new AuthenticationFailureHandler() {
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                        logger.info("session auth fail");
+                    }
+                })
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         return http.build();
     }
 }
