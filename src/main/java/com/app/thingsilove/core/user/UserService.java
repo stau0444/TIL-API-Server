@@ -59,35 +59,35 @@ public class UserService{
         newUser.setAuthorities(userRole);
     }
 
-    @Transactional(readOnly = true)
-    public LoginResp login(LoginReq loginReq){
-
-        Optional<User> byEmail = userRepository.findByEmail(loginReq.getEmail());
-        User user = byEmail.orElseThrow(LoginFailException::new);
-
-        LoginResp loginResp = new LoginResp();
-        loginResp.setEmail(user.getEmail());
-        loginResp.setCreatedAt(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm").format(user.getUserDateTime().getCreatedAt()));
-        loginResp.setThings(
-                user.getThingList().stream().map(t->
-                        ThingDto.builder()
-                                .id(t.getId())
-                                .categoryId(t.getCategory().getId())
-                                .comment(t.getMyComment())
-                                .name(t.getName())
-                                .build()
-                ).collect(Collectors.toList())
-        );
-        loginResp.setCategories(
-                user.getCategoryList().stream().map(c ->
-                        CategoryDto.builder()
-                                .id(c.getId())
-                                .name(c.getName())
-                                .build()
-                ).collect(Collectors.toList())
-        );
-        return loginResp;
-    }
+//    @Transactional(readOnly = true)
+//    public LoginResp login(LoginReq loginReq){
+//
+//        Optional<User> byEmail = userRepository.findByEmail(loginReq.getEmail());
+//        User user = byEmail.orElseThrow(LoginFailException::new);
+//
+//        LoginResp loginResp = new LoginResp();
+//        loginResp.setEmail(user.getEmail());
+//        loginResp.setCreatedAt(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm").format(user.getUserDateTime().getCreatedAt()));
+//        loginResp.setThings(
+//                user.getThingList().stream().map(t->
+//                        ThingDto.builder()
+//                                .id(t.getId())
+//                                .categoryId(t.getCategory().getId())
+//                                .comment(t.getMyComment())
+//                                .name(t.getName())
+//                                .build()
+//                ).collect(Collectors.toList())
+//        );
+//        loginResp.setCategories(
+//                user.getCategoryList().stream().map(c ->
+//                        CategoryDto.builder()
+//                                .id(c.getId())
+//                                .name(c.getName())
+//                                .build()
+//                ).collect(Collectors.toList())
+//        );
+//        return loginResp;
+//    }
 
     public PostThingResp addThing(PostThingReq thingReq) {
         Category category = categoryRepository.findById(thingReq.getCategoryId()).orElseThrow(NotExistCategoryException::new);

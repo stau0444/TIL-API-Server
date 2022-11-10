@@ -33,12 +33,12 @@ public class UserController{
         userService.saveUser(signUpReq);
     }
 
-    @GetMapping(value = "/login")
-    public ResponseEntity<LoginResp> login(String email) {
-        System.out.println("passed /login controller ");
-        LoginResp loginResp = userService.login(LoginReq.builder().email(email).build());
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(loginResp);
-    }
+//    @GetMapping(value = "/login")
+//    public ResponseEntity<LoginResp> login(String email) {
+//        System.out.println("passed /login controller ");
+//        LoginResp loginResp = userService.login(LoginReq.builder().email(email).build());
+//        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(loginResp);
+//    }
 
 
     @PostMapping("/thing")
