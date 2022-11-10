@@ -99,12 +99,15 @@ public class SecurityConfig {
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and()
                 .formLogin()
                     .loginPage("/")
                     .defaultSuccessUrl("/api/user/login")
                     .passwordParameter("pwd")
                     .usernameParameter("email")
-                    .successForwardUrl("/api/user/login")
+                    .successHandler(new RestLoginSuccessHandler()) //추가된 부분
                 .and()
                 .logout()
                 .logoutSuccessHandler(new CustomLogoutSuccessHandler())
@@ -113,12 +116,8 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                .sessionAuthenticationErrorUrl("/session-fail")
-                .invalidSessionUrl("/session-expired")
                 .maximumSessions(1)
-                .maxSessionsPreventsLogin(true)
-                .expiredUrl("/api/user/session-expired");
-
+                .maxSessionsPreventsLogin(true);
         return http.build();
     }
 }
