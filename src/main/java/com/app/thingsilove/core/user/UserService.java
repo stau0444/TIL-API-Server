@@ -65,11 +65,6 @@ public class UserService{
         Optional<User> byEmail = userRepository.findByEmail(loginReq.getEmail());
         User user = byEmail.orElseThrow(LoginFailException::new);
 
-        if(!encoder.matches(loginReq.getPwd(),user.getPassword())){
-            throw new LoginFailException();
-        }
-
-
         LoginResp loginResp = new LoginResp();
         loginResp.setEmail(user.getEmail());
         loginResp.setCreatedAt(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm").format(user.getUserDateTime().getCreatedAt()));

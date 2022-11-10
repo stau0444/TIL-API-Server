@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -37,6 +38,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -44,10 +46,10 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-
-//    private final CorsConfig corsConfig;
     private final UserDetailService userDetailsService;
-
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
+    private final RestLoginSuccessHandler loginSuccessHandler;
+    private final RestAuthenticationEntryPoint entryPoint;
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -83,41 +85,53 @@ public class SecurityConfig {
     public LogoutSuccessHandler logoutSuccessHandler(){
         return new CustomLogoutSuccessHandler();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
         http
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.GET,"/").permitAll()
-                    .antMatchers(HttpMethod.GET,"/health").permitAll()
-                    .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                    .antMatchers(HttpMethod.POST,"/api/user").permitAll()
-                    .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
-                    .antMatchers(HttpMethod.POST,"/api/user/logout").permitAll()
-                    .anyRequest().authenticated()
+                .antMatchers(HttpMethod.GET,"/").permitAll()
+                .antMatchers(HttpMethod.GET,"/health").permitAll()
+                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/user").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/user/login").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/user/logout").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .authenticationEntryPoint(entryPoint)
                 .and()
                 .formLogin()
-                    .loginPage("/")
-                    .defaultSuccessUrl("/api/user/login")
+                    .loginProcessingUrl("/api/user/login")
                     .passwordParameter("pwd")
                     .usernameParameter("email")
-                    .successHandler(new RestLoginSuccessHandler()) //추가된 부분
+                .failureHandler(new AuthenticationFailureHandler() {
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                        System.out.println("login fail");
+                    }
+                })
+                .successHandler(loginSuccessHandler)
                 .and()
                 .logout()
-                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                .logoutSuccessHandler(logoutSuccessHandler)
                     .deleteCookies("JSESSIONID")
                     .permitAll()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(true);
+                .sessionAuthenticationFailureHandler(new AuthenticationFailureHandler() {
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                        System.out.println("session auth fail");
+                        HttpSession session = request.getSession(false);
+                        System.out.println("session = " + session);
+                    }
+                })
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         return http.build();
     }
 }
