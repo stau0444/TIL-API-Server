@@ -1,39 +1,24 @@
 package com.app.thingsilove.web.common.security;
 
-import com.app.thingsilove.core.user.UserAuthRepository;
-import com.app.thingsilove.core.user.UserRepository;
-import com.app.thingsilove.core.user.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.session.*;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +32,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
     private final UserDetailService userDetailsService;
-    private final CustomLogoutSuccessHandler logoutSuccessHandler;
+    private final RestLogoutSuccessHandler logoutSuccessHandler;
     private final RestLoginSuccessHandler loginSuccessHandler;
     private final RestAuthenticationEntryPoint entryPoint;
     @Bean
@@ -83,7 +68,7 @@ public class SecurityConfig {
     }
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler(){
-        return new CustomLogoutSuccessHandler();
+        return new RestLogoutSuccessHandler();
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package com.app.thingsilove.web.advice;
+package com.app.thingsilove.web.common.advice;
 
 import com.app.thingsilove.core.user.LoginFailException;
 import com.app.thingsilove.core.user.UserExistException;
