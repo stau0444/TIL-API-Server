@@ -21,6 +21,7 @@ server:
         same-site: lax
         secure: true
         max-age: 30m
-
+  error:
+    include-binding-errors: always
 
 

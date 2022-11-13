@@ -1,9 +1,13 @@
 package com.app.thingsilove.web.common.security;
 
+import com.app.thingsilove.core.user.LoginFailException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -14,12 +18,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +38,8 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+
+    private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
     private final UserDetailService userDetailsService;
     private final RestLogoutSuccessHandler logoutSuccessHandler;
     private final RestLoginSuccessHandler loginSuccessHandler;
@@ -94,11 +103,9 @@ public class SecurityConfig {
                     .loginProcessingUrl("/api/user/login")
                     .passwordParameter("pwd")
                     .usernameParameter("email")
-                .failureHandler(new AuthenticationFailureHandler() {
-                    @Override
-                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                        System.out.println("login fail");
-                    }
+                .failureHandler((req,resp,exception)->{
+                    logger.info("login failed : {}" ,exception.getMessage());
+                    resp.sendError(401,"아이디 혹은 비밀번호가 잘못되었습니다.");
                 })
                 .successHandler(loginSuccessHandler)
                 .and()
@@ -108,13 +115,8 @@ public class SecurityConfig {
                     .permitAll()
                 .and()
                 .sessionManagement()
-                .sessionAuthenticationFailureHandler(new AuthenticationFailureHandler() {
-                    @Override
-                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                        System.out.println("session auth fail");
-                        HttpSession session = request.getSession(false);
-                        System.out.println("session = " + session);
-                    }
+                .sessionAuthenticationFailureHandler((req,resp,exception)->{
+                    throw new InvalidSessionException();
                 })
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         return http.build();
