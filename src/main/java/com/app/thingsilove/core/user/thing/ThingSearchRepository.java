@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ThingSearchRepository {
-    List<ThingDto> search(@Param(value = "category") String category,String sort);
+    List<ThingDto> search(@Param(value = "category") String category,String sort,String email);
 }

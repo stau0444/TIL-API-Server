@@ -161,8 +161,8 @@ public class UserService{
                 .build();
     }
 
-    public List<ThingDto> search(String category, String sort) {
-        List<ThingDto> searchList = thingRepository.search(category, sort);
+    public List<ThingDto> search(String category, String sort,String email) {
+        List<ThingDto> searchList = thingRepository.search(category, sort ,email);
         for (ThingDto thing : searchList) {
             System.out.println("thing = " + thing);
         }

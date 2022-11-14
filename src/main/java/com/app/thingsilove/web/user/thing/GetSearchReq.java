@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class GetSearchReq {
-    private String name;
-//    private String
+    private String category;
+    private String sort;
+    private String email;
 }
