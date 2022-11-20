@@ -8,7 +8,7 @@
 <br/>
 [3. 프로젝트 구조](#3프로젝트-구조)
 <br/>
-[4. 주요 기능 설명](#4주요-기능-설명)
+[4. ERD](#4ERD)
 <br/>
 
 
@@ -21,7 +21,7 @@
 
 <br/>
 
-좋아하는 것들을 리스트로 저장할 수 있는 앱입니다 .  리액트와 리덕스를 기반으로 만들어졌고 EC2 인스턴스의 Docker container로 배포되어 있습니다. 아래 링크에서 앱을 사용해볼 수 있습니다. REST API 방식으로 EC2 인스턴스에 Docker container로 배포되어 있는 Spring-boot API 서버에서 데이터를 받아오고 있으며. Jenkins, GitHub Hook , Docker Hub를 활용한 배포자동화가 구축되어 있습니다. 
+좋아하는 것들을 리스트로 저장할 수 있는 앱입니다 . Spring-boot , JPA , Spring-Security 기반으로 만들어졌으며 AWS EC2 인스턴스에 Docker container로 배포되어 있습니다. REST API 방식으로 EC2 인스턴스에 Docker container로 배포되어 있는 Front-end 서버에서 데이터를 응답하고 있습니다.   Jenkins, GitHub Hook , Docker Hub를 활용한 배포자동화가 구축되어 있습니다. 
 
 <br/>
 
@@ -67,3 +67,12 @@
 <img width="517" alt="TilBuildAndDeployFlow" src="https://user-images.githubusercontent.com/51349774/202758185-31986614-dc6c-4ea2-8ab4-8017a5fe875d.png">
 
 <br/>
+
+<img width="517" alt="TilReqRespFlow" src="https://user-images.githubusercontent.com/51349774/202911880-0c1b1768-5f78-4c8a-b9c0-5f689af619fd.png">
+
+
+---
+
+## 4.ERD
+
+<img width="517" alt="TIL-ERD" src="https://user-images.githubusercontent.com/51349774/202912345-5abd1f27-04e9-4eb6-b8d5-92ac1cc95498.png">
